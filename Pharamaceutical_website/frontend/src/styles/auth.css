@@ -1,0 +1,57 @@
+
+/* auth.css - styles for login & signup pages */
+.auth-wrapper {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f2fbf7 0%, #eaf8f0 100%);
+  padding: 3rem 1rem;
+}
+
+.auth-card {
+  background: #fff;
+  width: 420px;
+  max-width: 94%;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 {
+  text-align: center;
+  color: #0b7a5c;
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #e0e6e3;
+  font-size: 1rem;
+}
+
+.form-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 8px;
+  border: none;
+  background: #12916f;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-btn:disabled {
+  background: #9fcbb7;
+  cursor: not-allowed;
+}
+
+.input-error {
+  color: #c53030;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.6rem;
+}

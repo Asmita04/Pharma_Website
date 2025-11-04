@@ -1,40 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 // src/App.jsx
-import { Routes, Route, NavLink, BrowserRouter } from "react-router-dom";
-import MedicineShop from "./pages/MedicineShop.jsx"; // <-- your page component
-import CartPage from "./pages/CartPage.jsx";
+import React from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import FindDoctors from './pages/FindDoctors.jsx';
+import Home from "./pages/Home";
+import MedicineShop from "./pages/MedicineShop";
+import CartPage from "./pages/CartPage";
+import Contact from "./pages/Contact";
+import Login from "./pages/Login";
+import FindDoctors from "./pages/FindDoctors";
+import Signup from "./pages/Signup";
+import "./App.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";  
 
-function Home() {
-  return (
-    <div className="container py-5">
-      <h2 className="text-brand">Welcome to MediCure</h2>
-      <p>Home page content here.</p>
-    </div>
-  );
-}
+function Layout() {
+  const location = useLocation();
 
-export default function App(){
+  // Hide navbar on login/signup
+  const hideNavbar = location.pathname === "/login" || location.pathname === "/signup";
+
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<MedicineShop />} />   {/* <-- here */}
-        <Route path="/findDoctors" element={<FindDoctors/>} />
-        <Route path="/cart" element={<CartPage />} />
-        {/* add more routes as you build */}
-      </Routes>
+      {!hideNavbar && <Navbar />}
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<MedicineShop />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/findDoctors" element={<FindDoctors/>} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </div>
     </>
   );
 }
 
-
-
-
-
+export default Layout;

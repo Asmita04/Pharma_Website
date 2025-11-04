@@ -1,0 +1,267 @@
+/* Global */
+.home-container {
+  font-family: "Poppins", sans-serif;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(120deg, #008080, #00a3a3);
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: relative;
+  text-align: center;
+}
+
+.hero-section .container {
+  z-index: 2;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 90, 90, 0.4);
+  z-index: 1;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hero-section p {
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.btn-brand {
+  background-color: #00a3a3;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-brand:hover {
+  background-color: #007777;
+  transform: scale(1.05);
+}
+
+/* ========== ABOUT PRODUCTS SECTION ========== */
+.about-products {
+  background-color: #f8fefe;
+}
+
+.about-products .text-brand {
+  color: #007777;
+  font-weight: 700;
+}
+
+.about-products .card {
+  transition: all 0.3s ease-in-out;
+  border-radius: 16px;
+  background-color: #ffffff;
+}
+
+.about-products .card img {
+  width: 100%;
+  height: 230px; /* ✅ fixed height for consistency */
+  object-fit: cover; /* crops excess area evenly */
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.3s ease;
+}
+
+.about-products .card:hover img {
+  transform: scale(1.05);
+}
+
+.about-products .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 128, 128, 0.15);
+}
+
+.about-products h5 {
+  color: #008080;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.about-products p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* ========== HEALTH TIPS SECTION ========== */
+.health-tips {
+  background: linear-gradient(120deg, #e0ffff, #f8fefe);
+}
+
+.tip-card {
+  border-radius: 18px;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0, 128, 128, 0.25);
+}
+
+.tip-card h5 {
+  color: #007777;
+  font-weight: 600;
+}
+
+/* ========== MISSION & VISION ========== */
+.mission-vision {
+  background-color: #f5fdfd;
+  text-align: center;
+}
+
+.text-brand {
+  color: #007777;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.card-hover {
+  border: none;
+  border-radius: 16px;
+  background: #ffffff;
+  transition: all 0.3s ease-in-out;
+  padding: 25px;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 18px rgba(0, 128, 128, 0.15);
+}
+
+.card-hover h3 {
+  color: #008080;
+  margin-bottom: 15px;
+}
+
+/* ========== FIND MORE SECTION ========== */
+.find-more {
+  background: linear-gradient(120deg, #e0ffff, #f8fefe);
+}
+
+.info-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid #e0f4f4;
+}
+
+.info-card:hover {
+  box-shadow: 0 8px 18px rgba(0, 128, 128, 0.2);
+  transform: translateY(-6px);
+}
+
+.info-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.info-card:hover img {
+  transform: scale(1.05);
+}
+
+.info-card h5 {
+  color: #007777;
+  font-weight: 600;
+}
+
+.info-card p {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* ========== SOCIETY MESSAGE ========== */
+.society-message {
+  background: #008080;
+  color: white;
+  text-align: center;
+  padding: 60px 0;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+}
+
+.society-message h2 {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.society-message p {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: auto;
+  line-height: 1.8;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  background-color: #005959;
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 0.9rem;
+}
+
+/* ========== ANIMATIONS ========== */
+.animate-fade {
+  animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    height: 70vh;
+    padding: 20px;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .about-products .card img {
+    height: 200px;
+  }
+
+  .info-card img {
+    height: 150px;
+  }
+
+  .society-message h2 {
+    font-size: 1.6rem;
+  }
+}

@@ -1,52 +1,47 @@
+// backend/src/app.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { sequelize } from "./config/db.js";
 import medicineRoutes from "./routes/medicine.routes.js";
-import doctorRoutes from "./routes/doctor.routes.js"; // ADD THIS LINE
+import contactRoutes from "./routes/contact.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+
+// ✅ Import models *before* sync
+import "./models/Medicine.js";
+import "./models/Contact.js"; // use path import, no variable needed
+import "./models/User.js";
 
 dotenv.config();
+console.log("Using database:", process.env.DB_NAME);
+
 
 const app = express();
 
-// Middleware
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
+app.use(cors());
 app.use(express.json());
 
-// Test route
+// ✅ Default route
 app.get("/", (req, res) => res.send("Pharmacy API OK"));
 
-//test get doctors
-// Debug test
-app.get("/api/doctors/test", (req, res) => {
-  res.send("✅ Doctor test route OK");
-});
-
-
-// Routes
+// ✅ API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/medicines", medicineRoutes);
-app.use("/api/doctors", doctorRoutes); // ADD THIS LINE
+app.use("/api/contact", contactRoutes);
 
-// Database connection and sync
+// ✅ Connect DB and sync models
 (async () => {
   try {
     await sequelize.authenticate();
     console.log("✅ MySQL connected");
-    
-    await sequelize.sync({ alter: true }); // Changed to alter: true to update existing tables
-    console.log("✅ Models synced");
+
+    // force: false means don’t drop table, alter ensures structure is correct
+    await sequelize.sync({ alter: true });
+    console.log("✅ Models synced (including Contact)");
   } catch (err) {
     console.error("❌ DB error:", err.message);
   }
 })();
 
-// Start server
-const PORT = process.env.PORT || 5036;
-app.listen(PORT, () => console.log(`🚀 API listening on ${PORT}`));
+const PORT = process.env.PORT || 5012;
+app.listen(PORT, () => console.log(`🚀 API listening on port ${PORT}`));
