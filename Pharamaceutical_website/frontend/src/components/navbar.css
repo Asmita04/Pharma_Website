@@ -1,0 +1,106 @@
+/* Reuse your palette (same tokens as medicine-shop.css) */
+:root {
+  --brand-700: #0b7a5c;
+  --brand-600: #12916f;
+  --brand-500: #18a57e;
+  --brand-100: #e8f7f1;
+  --ink-800: #22302b;
+  --ink-500: #4b6a60;
+}
+
+/* Shell */
+.mc-navbar {
+  border-bottom: 1px solid #eef3f0;
+  background: #fff;
+}
+
+/* Brand */
+.mc-navbar .brand {
+  color: var(--brand-700);
+  text-decoration: none;
+}
+.mc-navbar .brand .brand-text {
+  font-weight: 800;
+  letter-spacing: .2px;
+  font-size: 1.05rem;
+}
+.mc-navbar .brand svg { color: var(--brand-600); }
+
+/* Links */
+.mc-navbar .nav-link {
+  display: inline-block;
+  padding: .55rem .85rem;
+  border-radius: .7rem;
+  color: var(--ink-500);
+  text-decoration: none;
+  font-weight: 600;
+}
+.mc-navbar .nav-link:hover { background: var(--brand-100); color: var(--brand-700); }
+.mc-navbar .nav-link.active { background: var(--brand-100); color: var(--brand-700); }
+.mc-navbar .disabled-link { opacity: .65; cursor: default; }
+
+/* Right actions */
+.mc-navbar .btn.btn-brand {
+  background: var(--brand-600);
+  border: none;
+  color: #fff;
+  padding: .5rem 1rem;
+  border-radius: .7rem;
+  font-weight: 700;
+}
+.mc-navbar .btn.btn-brand:hover { background: var(--brand-700); }
+
+/* Cart */
+.mc-navbar .cart-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  color: var(--brand-700);
+  text-decoration: none;
+  border: 1px solid #e6efe9;
+}
+.mc-navbar .cart-btn:hover { background: var(--brand-100); }
+.mc-navbar .cart-count {
+  position: absolute;
+  top: -6px; right: -6px;
+  min-width: 18px; height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--brand-600);
+  color: #fff;
+  font-size: .7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* Mobile */
+.mc-navbar .navbar-toggler {
+  width: 40px; height: 40px;
+  border: 1px solid #e6efe9;
+  border-radius: 10px;
+  background: #fff;
+}
+.mc-navbar .navbar-toggler span {
+  display: block;
+  height: 2px;
+  margin: 6px 7px;
+  background: var(--brand-700);
+  border-radius: 2px;
+}
+.mc-navbar .nav-links { display: none; }
+.mc-navbar .nav-links.show {
+  display: block;
+  position: absolute;
+  left: 0; right: 0; top: 58px;
+  background: #fff;
+  border-bottom: 1px solid #eef3f0;
+  padding: .75rem 1rem;
+}
+@media (min-width: 992px) {
+  .mc-navbar .nav-links { display: block !important; position: static; padding: 0; border: 0; }
+}

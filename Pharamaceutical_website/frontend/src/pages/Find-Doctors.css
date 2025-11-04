@@ -1,0 +1,245 @@
+/* Brand Colors - Teal/Green Theme */
+:root {
+  --brand-700: #0b7a5c;
+  --brand-600: #12916f;
+  --brand-500: #18a57e;
+  --brand-400: #39b892;
+  --brand-100: #e8f7f1;
+  --teal-primary: #0d9488;
+  --teal-dark: #0f766e;
+  --teal-light: #14b8a6;
+}
+
+.find-doctors {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.hero-section {
+  background: url("https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")
+    center/cover no-repeat;
+  min-height: 280px;
+  position: relative;
+}
+
+.hero-overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(11, 122, 92, 0.85),
+    rgba(18, 145, 111, 0.75)
+  );
+  min-height: 280px;
+}
+
+/* Filter Sidebar */
+.filters-sidebar {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  top: 20px;
+}
+
+.filter-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.filter-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.form-check {
+  margin-bottom: 0.5rem;
+}
+
+.form-check-input:checked {
+  background-color: var(--brand-600);
+  border-color: var(--brand-600);
+}
+
+.form-check-label {
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Filter Pills */
+.btn-filter {
+  border: 1px solid #dfe7e3;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #46635a;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+  border-color: var(--brand-400);
+  color: var(--brand-700);
+  background: var(--brand-100);
+}
+
+.btn-filter.active {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+  color: white;
+}
+
+/* Doctor Card */
+.doctor-card {
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.doctor-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.doctor-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+}
+
+.doctor-card .card-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.price-tag {
+  color: var(--brand-700);
+  font-weight: 700;
+}
+
+/* Buttons */
+.btn-brand {
+  background: var(--brand-600);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-brand:hover {
+  background: var(--brand-700);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-outline-brand {
+  border: 1.5px solid var(--brand-500);
+  color: var(--brand-600);
+  background: #fff;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-brand:hover {
+  background: var(--brand-100);
+  color: var(--brand-700);
+  border-color: var(--brand-700);
+}
+
+.btn-teal {
+  background: var(--teal-primary);
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-teal:hover {
+  background: var(--teal-dark);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-outline-teal {
+  border: 1.5px solid var(--teal-primary);
+  color: var(--teal-primary);
+  background: white;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-teal:hover {
+  background: #ccfbf1;
+  color: var(--teal-dark);
+  border-color: var(--teal-dark);
+}
+
+.text-brand {
+  color: var(--brand-700);
+}
+
+/* Badge */
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+}
+
+/* Star Rating */
+.text-warning {
+  color: #ffc107;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .hero-section {
+    min-height: 200px;
+  }
+
+  .hero-overlay {
+    min-height: 200px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 1.75rem;
+  }
+
+  .doctor-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .doctor-card .card-body {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn-filter {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .doctor-card .card-title {
+    font-size: 1rem;
+  }
+
+  .price-tag {
+    font-size: 1.25rem;
+  }
+}

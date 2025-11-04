@@ -1,0 +1,205 @@
+/* src/pages/medicine-shop.css */
+
+/* Brand palette (greens) */
+:root {
+  --brand-700: #0b7a5c;
+  --brand-600: #12916f;
+  --brand-500: #18a57e;
+  --brand-400: #39b892;
+  --brand-100: #e8f7f1;
+}
+
+.medicine-shop .text-brand { color: var(--brand-700); }
+.medicine-shop .btn-brand {
+  background: var(--brand-600);
+  color: #fff;
+  border: none;
+}
+.medicine-shop .btn-brand:hover { background: var(--brand-700); }
+
+/* Hero banner */
+.hero-hero {
+  background: url("https://images.unsplash.com/photo-1676364423874-19c785db3e61?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170")
+    center/cover no-repeat;
+  min-height: 280px;
+}
+.hero-overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.45));
+  min-height: 280px;
+}
+
+/* Filter pills */
+.btn-filter {
+  border: 1px solid #dfe7e3;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #46635a;
+}
+.btn-filter:hover { border-color: var(--brand-400); color: var(--brand-700); }
+.btn-filter.active {
+  background: var(--brand-100);
+  border-color: var(--brand-500);
+  color: var(--brand-700);
+}
+
+/* -------------------------------------------------- */
+/* Product card (uniform sizing + hard width guards)  */
+/* -------------------------------------------------- */
+.product-card {
+  height: 100%;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;                    /* clip hover panel neatly */
+  min-height: 460px;                   /* keep height uniform */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100% !important;              /* FORCE full column width */
+  box-sizing: border-box;
+}
+
+.product-card .badge-cat {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  left: 12px;
+  background: #fff;
+  color: var(--brand-700);
+  border: 1px solid rgba(0,0,0,.06);
+  padding: .35rem .6rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .72rem;
+}
+
+/* Make the image area fixed-height and full-width */
+.product-card .img-wrap {
+  position: relative;
+  width: 100% !important;              /* guard against external styles */
+  height: 190px;
+  overflow: hidden;
+  display: block;
+  box-sizing: border-box;
+}
+.product-card img {
+  display: block;
+  width: 100% !important;              /* guard against max-width rules */
+  max-width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.product-card:hover img { transform: scale(1.04); }
+
+/* Let body grow so cards align; prevents collapse */
+.product-card .card-body {
+  flex-grow: 1;
+  min-height: 1px;                     /* avoid flex min-content shrink */
+}
+
+/* Card footer spans full width at bottom */
+.product-card .card-footer {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================================= */
+/* Tooltip-style hover drop (green box)          */
+/* ============================================= */
+.product-card .hover-drop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  transform: translateY(100%);
+  transition: transform 0.25s ease-in-out;
+
+  background: rgba(15, 115, 87, 0.95);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  z-index: 3;
+}
+.product-card:hover .hover-drop { transform: translateY(0%); }
+
+.hover-drop h6 {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.hover-drop p {
+  margin: 0 0 0.35rem 0;
+  font-size: 0.78rem;
+  color: #e4f2ed;
+}
+.hover-drop .price {
+  font-weight: 700;
+  color: #ffffff;
+  float: right;
+}
+
+/* tiny separator dot */
+.dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: #c7d7d1;
+  border-radius: 999px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* <= set your card min width */
+  gap: 1.25rem; /* space between cards */
+  align-items: stretch; /* make all grid items equal height */
+}
+
+/* 2 columns on small screens */
+@media (min-width: 576px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3 columns on tablets */
+@media (min-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 4 columns on large screens */
+@media (min-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Secondary button (outline version of brand) */
+.btn-outline-brand {
+  border: 1.5px solid var(--brand-500);
+  color: var(--brand-600);
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-brand:hover {
+  background: var(--brand-100);
+  color: var(--brand-700);
+  border-color: var(--brand-700);
+}
+
+/* Tidy small input/select inside cart rows */
+.input-group-sm .form-select,
+.input-group-sm .input-group-text {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  height: 32px;
+}
+
+/* Make the right card summary look consistent with brand */
+.text-brand { color: var(--brand-700); }
