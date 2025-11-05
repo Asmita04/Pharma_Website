@@ -1,0 +1,67 @@
+/* Reuse your brand palette (same tokens used in medicine-shop.css) */
+:root {
+  --brand-700: #0b7a5c;
+  --brand-600: #12916f;
+  --brand-500: #18a57e;
+  --brand-400: #39b892;
+  --brand-100: #e8f7f1;
+
+  --ink-800: #22302b;
+  --ink-500: #4b6a60;
+  --border: #e8efe9;
+}
+
+/* Layout helper to get 5 cards on xl (≈20% each) */
+@media (min-width: 1200px) {
+  .col-xl-2-4 { flex: 0 0 auto; width: 20%; }
+}
+
+.admin-dash h4 { color: var(--ink-800); }
+
+/* KPI card */
+.kpi-card {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 18px rgba(9, 74, 56, 0.06);
+  transition: all .2s ease;
+  cursor: pointer;
+}
+.kpi-card:hover { transform: translateY(-2px); border-color: var(--brand-400); }
+.kpi-card.active { outline: 2px solid var(--brand-100); border-color: var(--brand-500); }
+
+.kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  background: var(--brand-100);
+  color: var(--brand-700);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.kpi-title {
+  font-weight: 700;
+  color: var(--ink-800);
+  line-height: 1.15;
+}
+.kpi-value {
+  color: var(--brand-700);
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-top: 2px;
+}
+
+/* Wide panel below cards */
+.wide-panel { border-radius: 14px; }
+.wide-panel .card-body { padding: 18px 18px; }
+.panel-body { min-height: 360px; }
+
+/* Optional text-brand utilities to match the theme */
+.text-brand { color: var(--brand-700) !important; }
+.btn-brand {
+  background: var(--brand-600);
+  color: #fff; border: none;
+}
+.btn-brand:hover { background: var(--brand-700); color: #fff; }
