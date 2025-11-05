@@ -203,3 +203,6 @@
 
 /* Make the right card summary look consistent with brand */
 .text-brand { color: var(--brand-700); }
+
+/* Cart page width fixes (scoped) */
+/* Wider but scoped to the cart page only */

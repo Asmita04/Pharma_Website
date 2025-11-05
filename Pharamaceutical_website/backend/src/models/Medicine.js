@@ -3,8 +3,8 @@ import { sequelize } from "../config/db.js";
 
 /**
  * NOTE on "desc":
- * DESC is an SQL keyword. To avoid conflicts while keeping your API field as "desc",
- * we map it to a real DB column named "description" using Sequelize's "field" option.
+ * DESC is an SQL keyword. We keep the API field as "desc" but map it to
+ * the DB column "description" via Sequelize's `field` option.
  */
 
 const CATEGORY_ENUM = [
@@ -15,6 +15,9 @@ const CATEGORY_ENUM = [
   "Pain Relief",
   "Personal Care",
 ];
+
+// Keep status simple and future-proof (feel free to extend later)
+const STATUS_ENUM = ["available", "inactive"];
 
 export const Medicine = sequelize.define(
   "Medicine",
@@ -57,11 +60,24 @@ export const Medicine = sequelize.define(
       type: DataTypes.STRING(255), // e.g., "/images/glucoGuard.jpg"
       allowNull: true,
     },
+
+    // NEW: expiry_date (DATEONLY so we store "YYYY-MM-DD")
+    expiry_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+
+    // NEW: status (available/inactive)
+    status: {
+      type: DataTypes.ENUM(...STATUS_ENUM),
+      allowNull: false,
+      defaultValue: "available",
+    },
   },
   {
     tableName: "medicines",
-    timestamps: true, // adds createdAt, updatedAt
-    indexes: [{ fields: ["category"] }, { fields: ["name"] }],
+    timestamps: true, // createdAt, updatedAt
+    indexes: [{ fields: ["category"] }, { fields: ["name"] }, { fields: ["status"] }],
   }
 );
 

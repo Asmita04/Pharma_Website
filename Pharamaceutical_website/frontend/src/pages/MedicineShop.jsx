@@ -98,6 +98,13 @@ export default function MedicineShop() {
                 </div>
                 <p className="card-text text-muted small mb-3">{p.pack}</p>
 
+                {/* expiry date */}
+                {p.expiry_date && (
+                <p className="card-text text-muted small mb-3">
+                Exp: {new Date(p.expiry_date).toLocaleDateString()}
+                </p>
+                )}
+
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center gap-3 small text-muted">
                     <span>OTC</span>

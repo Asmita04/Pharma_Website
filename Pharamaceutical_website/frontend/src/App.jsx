@@ -9,6 +9,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import FindDoctors from "./pages/FindDoctors";
 import Signup from "./pages/Signup";
+import AdminDashboard from "./components/AdminDashboard.jsx";
 import "./App.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";  
 
@@ -30,6 +31,7 @@ function Layout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </div>
     </>

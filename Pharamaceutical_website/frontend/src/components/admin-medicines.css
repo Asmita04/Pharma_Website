@@ -1,0 +1,64 @@
+/* src/components/dashboard/medicines/admin-medicines.css */
+
+/* Use same brand tokens you already have */
+:root{
+  --brand-700:#0b7a5c;
+  --brand-600:#12916f;
+  --brand-500:#18a57e;
+  --brand-400:#39b892;
+  --brand-100:#e8f7f1;
+  --ink-800:#22302b;
+  --border:#e8efe9;
+}
+
+.text-brand{ color:var(--brand-700)!important; }
+
+.btn-brand{
+  background:var(--brand-600);
+  color:#fff;
+  border:none;
+}
+.btn-brand:hover{ background:var(--brand-700); color:#fff; }
+
+.btn-outline-brand{
+  border:1px solid var(--brand-500);
+  color:var(--brand-700);
+  background:#fff;
+}
+.btn-outline-brand:hover{
+  background:var(--brand-100);
+  border-color:var(--brand-600);
+  color:var(--brand-700);
+}
+
+/* top bar inside panel */
+.admin-meds .kbar{
+  padding:6px 2px;
+}
+
+/* table styles */
+.table-meds thead th{
+  background:#fff;
+  position:sticky; top:0; z-index:1;
+  border-bottom:1px solid var(--border);
+}
+.table-meds tbody td{
+  vertical-align: middle;
+}
+
+/* image thumb */
+.thumb{
+  width:54px; height:54px; border-radius:8px; overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 4px 12px rgba(9,74,56,.06);
+  display:flex; align-items:center; justify-content:center;
+  background:#fff;
+}
+.thumb img{ width:100%; height:100%; object-fit:cover; }
+.thumb-ph{ font-size:.7rem; color:#9aa8a2; padding:2px; text-align:center; }
+
+/* alerts compact */
+.alert{ margin-bottom: 12px; }
+
+/* form tweaks */
+.admin-meds .form-label{ font-weight:600; }
