@@ -130,7 +130,7 @@ export default function FindDoctors() {
   // Get doctor image
   const getDoctorImage = (doctorName) => {
     if (!doctorName) {
-      return new URL("../assets/doctors/default-doctor.jpeg", import.meta.url).href;
+      return new URL("../assets/doctors/default_doctor.jpeg", import.meta.url).href;
     }
     const nameKey = doctorName.toLowerCase().split(" ")[1];
     const imageMap = {
@@ -140,7 +140,7 @@ export default function FindDoctors() {
       "sneha": new URL("../assets/doctors/dr-neha.jpeg", import.meta.url).href,
       "arjun": new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href
     };
-    return imageMap[nameKey] || new URL("../assets/doctors/default-doctor.jpeg", import.meta.url).href;
+    return imageMap[nameKey] || new URL("../assets/doctors/default_doctor.jpeg", import.meta.url).href;
   };
 
   return (

@@ -1,21 +1,58 @@
 // src/components/dashboard/AdminDashboard.jsx
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./admindashboard.css";
 import MedicinesList from "./MedicinesList.jsx";
 import MedicineForm from "./MedicineForm.jsx";
+import DoctorsList from "./DoctorsList.jsx";
+import DoctorForm from "./DoctorForm.jsx";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 export default function AdminDashboard() {
   const [active, setActive] = useState(null);
+
+  //for route
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
+  //Medicines
   const [medsView, setMedsView] = useState("list");        // 'list' | 'form'
   const [reloadToken, setReloadToken] = useState(0);        // force list reload
   const [selectedMedicine, setSelectedMedicine] = useState(null); // for edit
 
+//Doctors
+const [doctorsView, setDoctorsView] = useState("list");        // 'list' | 'form'
+const [reloadTokenForDoctor, setReloadTokenForDoctor] = useState(0);  // force list reload
+const [selectedDoctor, setSelectedDoctor] = useState(null);     // for edit
+
+// 👇 ADD THIS new code right here
+const [doctorCount, setDoctorCount] = useState(0);
+const API = import.meta.env.VITE_API_BASE_URL || "";
+
+useEffect(() => {
+  const loadDoctorCount = async () => {
+    try {
+      const res = await fetch(`${API}/api/doctors`);
+      if (!res.ok) throw new Error("Failed to fetch doctors");
+      const data = await res.json();
+      const doctorsArray = Array.isArray(data.data) ? data.data : data;
+      setDoctorCount(doctorsArray.length || 0);
+    } catch (err) {
+      console.error("Error fetching doctor count:", err);
+    }
+  };
+
+  loadDoctorCount();
+}, [API, reloadTokenForDoctor]);
+
+
   const KPIS = [
     { key: "sales",    title: "Total Sales", suffix: "₹", value: 0, hint: "View total revenue" },
     { key: "orders",   title: "Orders",      value: 0,               hint: "View all orders" },
-    { key: "doctors",  title: "Doctors",     value: 0,               hint: "Manage doctors" },
+    { key: "doctors",  title: "Doctors",     value: doctorCount,     hint: "Manage doctors" },
     { key: "patients", title: "Patients",    value: 0,               hint: "Manage patients" },
-    { key: "meds",     title: "Medicines",   value: 0,               hint: "View/Add/Delete medicines" },
+    { key: "meds",     title: "Medicines",   value: 1,               hint: "View/Add/Delete medicines" },
   ];
 
   const panelTitle = active
@@ -43,6 +80,22 @@ export default function AdminDashboard() {
       );
     }
 
+    if (active === "doctors") {
+      return doctorsView === "list" ? (
+        <DoctorsList
+          onAdd={() => { setSelectedDoctor(null); setDoctorsView("form"); }}
+          onEdit={(row) => { setSelectedDoctor(row); setDoctorsView("form"); }}
+          reloadTokenForDoctor={reloadTokenForDoctor}
+        />
+      ) : (
+        <DoctorForm
+          initial={selectedDoctor}               // if present -> PUT; else -> POST
+          onSaved={() => { setDoctorsView("list"); setReloadTokenForDoctor(t => t + 1); }}
+          onCancel={() => setDoctorsView("list")}
+        />
+      );
+    }
+
     return <div className="text-muted"><em>Placeholder:</em> Content for <strong>{active}</strong> goes here.</div>;
   }
 
@@ -57,7 +110,13 @@ export default function AdminDashboard() {
             <button
               type="button"
               className={`kpi-card w-100 text-start ${active === kpi.key ? "active" : ""}`}
-              onClick={() => { setActive(kpi.key); if (kpi.key === "meds") setMedsView("list"); }}
+             onClick={() => {
+                      setActive(kpi.key);
+                      if (kpi.key === "meds") setMedsView("list");
+                      if (kpi.key === "doctors") setDoctorsView("list");
+                      navigate(`/admin/dashboard/${kpi.key}`);
+              }}
+
               title={kpi.hint}
             >
               <div className="kpi-icon" aria-hidden>★</div>
