@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+// src/components/Find-Doctors.jsx
+import React, { useEffect, useMemo, useState } from "react";
 import "./Find-doctors.css";
 
 const SPECIALIZATIONS = [
@@ -13,22 +13,16 @@ const SPECIALIZATIONS = [
   "Neurologist",
   "Dentist",
   "General Physician",
+  "Psychiatrist",
+  "Ophthalmologist",
+  "ENT Specialist",
 ];
 
-function StarRating({ value }) {
-  const full = Math.floor(value);
-  const half = value - full >= 0.5;
-  return (
-    <span className="text-warning">
-      {"★".repeat(full)}
-      {half ? "☆" : ""}
-      {"☆".repeat(5 - full - (half ? 1 : 0))}
-    </span>
-  );
-}
-
 export default function FindDoctors() {
+  const API = import.meta.env.VITE_API_BASE_URL || "";
   const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState("");
   const [filters, setFilters] = useState({
     specialization: "All",
     modeOfConsult: [],
@@ -36,23 +30,30 @@ export default function FindDoctors() {
     feeRange: [],
     languages: [],
   });
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [showAllLanguages, setShowAllLanguages] = useState(false); // ✅ added this missing state
-  const navigate = useNavigate();
+  const [showAllLanguages, setShowAllLanguages] = useState(false);
 
   // Fetch doctors from backend
   useEffect(() => {
+    let ignore = false;
     const load = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doctors`);
+        setLoading(true);
+        setMsg("");
+        const res = await fetch(`${API}/api/doctors`);
+        if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
         const data = await res.json();
-        setDoctors(data);
-      } catch (error) {
-        console.error("Error loading doctors:", error);
+        // Handle response format from Sequelize backend
+        const doctorsList = data.data || data.doctors || (Array.isArray(data) ? data : []);
+        if (!ignore) setDoctors(Array.isArray(doctorsList) ? doctorsList : []);
+      } catch (e) {
+        if (!ignore) setMsg(e.message || "Failed to load doctors");
+      } finally {
+        if (!ignore) setLoading(false);
       }
     };
     load();
-  }, []);
+    return () => { ignore = true; };
+  }, [API]);
 
   // Filter doctors based on selected filters
   const filteredDoctors = useMemo(() => {
@@ -122,21 +123,24 @@ export default function FindDoctors() {
       modeOfConsult: [],
       experienceRange: [],
       feeRange: [],
-      languages: [],
+      languages: []
     });
   };
 
-  const handleBooking = (doctor, type) => {
-    const bookingData = {
-      doctorId: doctor.id,
-      doctorName: doctor.name,
-      specialization: doctor.specialization,
-      fee: doctor.consultationFee,
-      consultType: type,
-      img: doctor.img,
+  // Get doctor image
+  const getDoctorImage = (doctorName) => {
+    if (!doctorName) {
+      return new URL("../assets/doctors/default-doctor.jpeg", import.meta.url).href;
+    }
+    const nameKey = doctorName.toLowerCase().split(" ")[1];
+    const imageMap = {
+      "rohan": new URL("../assets/doctors/dr-rajesh.jpeg", import.meta.url).href,
+      "priya": new URL("../assets/doctors/dr-anjali.jpeg", import.meta.url).href,
+      "amit": new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href,
+      "sneha": new URL("../assets/doctors/dr-neha.jpeg", import.meta.url).href,
+      "arjun": new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href
     };
-    sessionStorage.setItem("bookingData", JSON.stringify(bookingData));
-    navigate("/booking");
+    return imageMap[nameKey] || new URL("../assets/doctors/default-doctor.jpeg", import.meta.url).href;
   };
 
   return (
@@ -240,7 +244,7 @@ export default function FindDoctors() {
                   "Hindi",
                   "Telugu",
                   ...(showAllLanguages
-                    ? ["Marathi", "Tamil", "Gujarati", "Kannada"]
+                    ? ["Marathi", "Tamil", "Gujarati", "Kannada", "Malayalam", "Bengali", "Punjabi", "Urdu", "Odia"]
                     : []),
                 ].map((lang) => (
                   <div className="form-check" key={lang}>
@@ -269,6 +273,8 @@ export default function FindDoctors() {
 
           {/* Main Content */}
           <main className="col-lg-9">
+            {msg && <div className="alert alert-danger py-2">{msg}</div>}
+
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4 className="mb-0">
                 Consult{" "}
@@ -280,6 +286,7 @@ export default function FindDoctors() {
               </h4>
             </div>
 
+            {/* Specialization Buttons */}
             <div className="d-flex flex-wrap gap-2 mb-4">
               {SPECIALIZATIONS.map((spec) => (
                 <button
@@ -296,78 +303,84 @@ export default function FindDoctors() {
 
             {/* Doctor Cards */}
             <div className="doctors-list">
-              {filteredDoctors.map((doctor) => (
-                <article key={doctor.id} className="doctor-card card mb-3 shadow-sm border">
-                  <div className="card-body p-4">
-                    <div className="row">
-                      <div className="col-auto">
-                        <img
-                          src={doctor.img || "/images/default-doctor.jpg"}
-                          alt={doctor.name}
-                          className="doctor-img rounded"
-                        />
-                      </div>
-
-                      <div className="col">
-                        <div className="row">
-                          <div className="col-md-8">
-                            <div className="d-flex align-items-center gap-2 mb-2">
-                              <h5 className="card-title mb-0">Dr {doctor.name}</h5>
-                              <i className="bi bi-info-circle text-muted"></i>
-                            </div>
-                            <p className="text-muted mb-1">{doctor.specialization}</p>
-                            <p className="small text-secondary mb-2">
-                              {doctor.experience} YEARS • {doctor.qualifications}
-                            </p>
-                            <p className="small mb-2">{doctor.location}</p>
-                            <p className="small text-muted mb-3">{doctor.clinic}</p>
-                          </div>
-
-                          <div className="col-md-4 text-md-end">
-                            {doctor.onTimeGuarantee && (
-                              <span className="badge bg-primary mb-2 d-inline-block">
-                                ON TIME GUARANTEE
-                              </span>
-                            )}
-                            <div className="price-tag fs-4 fw-bold text-dark">
-                              ₹{doctor.consultationFee}
-                            </div>
-                          </div>
+              {loading ? (
+                <div className="text-center py-5">
+                  <div className="spinner-border text-brand" role="status">
+                    <span className="visually-hidden">Loading…</span>
+                  </div>
+                  <p className="mt-3">Loading doctors...</p>
+                </div>
+              ) : filteredDoctors.length > 0 ? (
+                filteredDoctors.map((doctor) => (
+                  <article key={doctor.doctor_id} className="doctor-card card mb-3 shadow-sm border">
+                    <div className="card-body p-4">
+                      <div className="row">
+                        <div className="col-auto">
+                          <img
+                            src={getDoctorImage(doctor.doctor_name)}
+                            alt={doctor.doctor_name}
+                            className="doctor-img rounded"
+                            style={{ width: "120px", height: "120px", objectFit: "cover" }}
+                          />
                         </div>
 
-                        <div className="row mt-3">
-                          <div className="col-md-6 mb-2 mb-md-0">
-                            {(doctor.modeOfConsult === "Online Consult" ||
-                              doctor.modeOfConsult === "Both") && (
-                              <button
-                                className="btn btn-outline-teal w-100 py-2"
-                                onClick={() => handleBooking(doctor, "online")}
-                              >
-                                <div className="fw-bold">Online Consult</div>
-                                <small className="text-success">{doctor.availability}</small>
-                              </button>
-                            )}
+                        <div className="col">
+                          <div className="row">
+                            <div className="col-md-8">
+                              <div className="d-flex align-items-center gap-2 mb-2">
+                                <h5 className="card-title mb-0">{doctor.doctor_name}</h5>
+                                <i className="bi bi-info-circle text-muted"></i>
+                              </div>
+                              <p className="text-muted mb-1">{doctor.specialization}</p>
+                              <p className="small text-secondary mb-2">
+                                {doctor.experience} YEARS
+                              </p>
+                              <p className="small mb-2">{doctor.address}</p>
+                              <p className="small text-muted mb-3">
+                                📞 {doctor.contact_no}
+                              </p>
+                            </div>
+
+                            <div className="col-md-4 text-md-end">
+                              <div className="price-tag fs-4 fw-bold text-dark">
+                                ₹{parseFloat(doctor.consultationFee).toFixed(2)}
+                              </div>
+                            </div>
                           </div>
-                          <div className="col-md-6">
-                            {(doctor.modeOfConsult === "Hospital Visit" ||
-                              doctor.modeOfConsult === "Both") && (
-                              <button
-                                className="btn btn-teal w-100 py-2"
-                                onClick={() => handleBooking(doctor, "visit")}
-                              >
-                                <div className="fw-bold">Visit Doctor</div>
-                                <small>{doctor.availability}</small>
-                              </button>
-                            )}
+
+                          {/* Languages */}
+                          {doctor.languages && doctor.languages.length > 0 && (
+                            <p className="small text-muted mb-3">
+                              🗣️ {doctor.languages.join(", ")}
+                            </p>
+                          )}
+
+                          <div className="row mt-3">
+                            <div className="col-md-6 mb-2 mb-md-0">
+                              {(doctor.modeOfConsult === "Online Consult" ||
+                                doctor.modeOfConsult === "Both") && (
+                                <button className="btn btn-outline-teal w-100 py-2">
+                                  <div className="fw-bold">Online Consult</div>
+                                  <small className="text-success">Available</small>
+                                </button>
+                              )}
+                            </div>
+                            <div className="col-md-6">
+                              {(doctor.modeOfConsult === "Hospital Visit" ||
+                                doctor.modeOfConsult === "Both") && (
+                                <button className="btn btn-teal w-100 py-2">
+                                  <div className="fw-bold">Visit Doctor</div>
+                                  <small>Available</small>
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </article>
-              ))}
-
-              {filteredDoctors.length === 0 && (
+                  </article>
+                ))
+              ) : (
                 <div className="text-center py-5">
                   <i className="bi bi-search fs-1 text-muted"></i>
                   <p className="text-muted mt-3">No doctors found matching your filters.</p>
