@@ -6,8 +6,7 @@ export const createDoctor = async (req, res) => {
   try {
     console.log("Creating new doctor...");
     console.log("Request body:", req.body);
-
-    // CONCEPT: req.body contains the JSON data sent from client
+    
     // Doctor.create() inserts a new record into the database
     const doctor = await Doctor.create(req.body);
 
