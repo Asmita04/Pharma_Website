@@ -1,0 +1,112 @@
+/* Admin Doctors Styles */
+.admin-doctors {
+  padding: 1rem;
+}
+
+.admin-doctors .kbar {
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.admin-doctors .text-brand {
+  color: var(--brand-700, #0b7a5c);
+}
+
+.admin-doctors .btn-brand {
+  background: var(--brand-600, #12916f);
+  color: #fff;
+  border: none;
+}
+
+.admin-doctors .btn-brand:hover {
+  background: var(--brand-700, #0b7a5c);
+  color: #fff;
+}
+
+.admin-doctors .btn-outline-brand {
+  border: 1.5px solid var(--brand-500, #18a57e);
+  color: var(--brand-600, #12916f);
+  background: #fff;
+}
+
+.admin-doctors .btn-outline-brand:hover {
+  background: var(--brand-100, #e8f7f1);
+  color: var(--brand-700, #0b7a5c);
+  border-color: var(--brand-700, #0b7a5c);
+}
+
+.admin-doctors .table-doctors {
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-doctors .table-doctors thead {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.admin-doctors .table-doctors tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.admin-doctors .card {
+  border-radius: 12px;
+}
+
+.admin-doctors .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.admin-doctors .form-control,
+.admin-doctors .form-select {
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.admin-doctors .form-control:focus,
+.admin-doctors .form-select:focus {
+  border-color: var(--brand-500, #18a57e);
+  box-shadow: 0 0 0 0.2rem rgba(24, 165, 126, 0.25);
+}
+
+.admin-doctors .badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+}
+
+/* Scrollable language checkboxes */
+.admin-doctors .border.rounded {
+  background: #f8f9fa;
+}
+
+.admin-doctors .form-check-input:checked {
+  background-color: var(--brand-600, #12916f);
+  border-color: var(--brand-600, #12916f);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-doctors .kbar {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.75rem;
+  }
+
+  .admin-doctors .kbar .d-flex {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-doctors .form-control-sm,
+  .admin-doctors .form-select-sm {
+    font-size: 0.85rem;
+  }
+}

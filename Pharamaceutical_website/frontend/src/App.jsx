@@ -12,6 +12,7 @@ import Signup from "./pages/Signup";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import "./App.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";  
+import DoctorsManagement from "./components/DoctorsManagement.jsx";
 
 function Layout() {
   const location = useLocation();
@@ -31,7 +32,8 @@ function Layout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+         <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
         </Routes>
       </div>
     </>
