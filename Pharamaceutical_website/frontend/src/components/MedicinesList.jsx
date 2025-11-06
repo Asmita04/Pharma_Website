@@ -13,6 +13,22 @@ export default function MedicinesList({ onAdd, onEdit, reloadToken = 0 }) {
   const [cat, setCat] = useState("");
   const [status, setStatus] = useState("");
 
+  // --- NEW: image resolver ---
+  const resolveImg = (p) => {
+    if (!p) return "";
+    // absolute or data/blob URLs -> use as-is
+    if (/^(https?:)?\/\//i.test(p) || /^data:|^blob:/i.test(p)) return p;
+
+    // frontend static assets (served by Vite) -> use as-is
+    if (p.startsWith("/images")) return p;
+
+    // backend uploads -> prefix API base
+    if (p.startsWith("/uploads")) return `${API}${p}`;
+
+    // anything else: make it a backend-relative path
+    return `${API}${p.startsWith("/") ? "" : "/"}${p}`;
+  };
+
   useEffect(() => {
     let ignore = false;
     const load = async () => {
@@ -54,7 +70,6 @@ export default function MedicinesList({ onAdd, onEdit, reloadToken = 0 }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error || `Delete failed (${res.status})`);
       }
-      // Optimistic remove from table
       setRows(prev => prev.filter(r => r.id !== id));
     } catch (e) {
       alert(e.message || "Delete failed");
@@ -114,7 +129,18 @@ export default function MedicinesList({ onAdd, onEdit, reloadToken = 0 }) {
                   <td>{i + 1}</td>
                   <td>
                     <div className="thumb">
-                      {r.img ? <img src={r.img} alt={r.name} /> : <span className="thumb-ph">No Image</span>}
+                      {r.img ? (
+                        <img
+                          src={resolveImg(r.img)}
+                          alt={r.name}
+                          width={36}
+                          height={36}
+                          loading="lazy"
+                          onError={(e) => { e.currentTarget.src = "public/images/glycol.webp"; }}
+                        />
+                      ) : (
+                        <span className="thumb-ph">No Image</span>
+                      )}
                     </div>
                   </td>
                   <td>

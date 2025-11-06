@@ -17,6 +17,15 @@ export default function Login() {
     e.preventDefault();
     if (!form.email || !form.password) { setError("Email and password required"); return; }
 
+    // 🔐 Admin shortcut (same login page)
+    if (form.email === "admin@gmail.com" && form.password === "admin123") {
+      localStorage.setItem("role", "admin");
+      localStorage.setItem("token", "admin-static-token"); // just a placeholder
+      navigate("/admin/dashboard");
+      return;
+    }
+
+    // 👤 Normal user login via API
     setLoading(true);
     try {
       const res = await fetch("http://localhost:5012/api/auth/login", {
@@ -28,8 +37,8 @@ export default function Login() {
       if (!res.ok) {
         setError(data.message || "Login failed");
       } else {
-        // store token and redirect
         localStorage.setItem("token", data.token);
+        localStorage.setItem("role", "user");
         navigate("/");
       }
     } catch (err) {
@@ -38,6 +47,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="auth-wrapper">

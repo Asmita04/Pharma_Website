@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import FindDoctors from "./pages/FindDoctors";
 import Signup from "./pages/Signup";
 import AdminDashboard from "./components/AdminDashboard.jsx";
+import ProtectedAdmin from "./pages/ProtectedAdmin.jsx";
 import "./App.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";  
 import DoctorsManagement from "./components/DoctorsManagement.jsx";
@@ -26,6 +27,7 @@ function Layout() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>}/>
           <Route path="/shop" element={<MedicineShop />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/findDoctors" element={<FindDoctors/>} />

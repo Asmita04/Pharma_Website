@@ -1,5 +1,5 @@
 // src/components/dashboard/medicines/MedicineForm.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admin-medicines.css";
 
 const CATEGORY_OPTIONS = [
@@ -20,23 +20,65 @@ const INITIAL = {
   expiry_date: "",
   status: "available",
   desc: "",
-  img: "",
+  img: "", // server path (e.g. /uploads/medicines/abc.jpg)
 };
 
-export default function MedicineForm({
-  onSaved,     // () => void  -> back to list + refresh
-  onCancel,    // () => void
-  initial,     // optional row for editing (not required now)
-}) {
+export default function MedicineForm({ onSaved, onCancel, initial }) {
   const API = import.meta.env.VITE_API_BASE_URL || "";
   const [form, setForm] = useState(initial ? { ...INITIAL, ...initial } : INITIAL);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");       // local preview URL or absolute server URL
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
 
-  function handleChange(e) {
+  // Show existing image preview for edit mode
+  useEffect(() => {
+    if (initial?.img) {
+      const abs = initial.img.startsWith("http")
+        ? initial.img
+        : `${API}${initial.img}`;
+      setPreview(abs);
+    }
+  }, [initial, API]);
+
+  // Clean up object URLs
+  useEffect(() => {
+    return () => {
+      if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
-  }
+    if (msg.text) setMsg({ type: "", text: "" });
+  };
+
+  const handleFile = (e) => {
+    const f = e.target.files?.[0] || null;
+    setFile(f);
+    if (!f) {
+      // no selection
+      setPreview(initial?.img ? `${API}${initial.img}` : "");
+      return;
+    }
+
+    // Optional guards
+    if (!/^image\//.test(f.type)) {
+      setMsg({ type: "danger", text: "Please choose an image file (PNG/JPG/WebP…)." });
+      setFile(null);
+      return;
+    }
+    const MB = f.size / (1024 * 1024);
+    if (MB > 5) {
+      setMsg({ type: "danger", text: "Image must be ≤ 5MB." });
+      setFile(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(f);
+    setPreview(url);
+  };
 
   function validate() {
     if (!form.name?.trim()) return "Name is required";
@@ -44,12 +86,29 @@ export default function MedicineForm({
     if (form.price === "" || Number(form.price) < 0) return "Price must be ≥ 0";
     const rating = Number(form.rating);
     if (isNaN(rating) || rating < 0 || rating > 5) return "Rating must be between 0 and 5";
+
     if (form.expiry_date) {
-      const today = new Date().toISOString().slice(0, 10);
-      if (form.expiry_date < today) return "Expiry date cannot be in the past";
+      const exp = new Date(form.expiry_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (exp < today) return "Expiry date cannot be in the past";
     }
     return null;
   }
+
+  const uploadImageIfAny = async () => {
+    if (!file) return form.img?.trim() || ""; // keep existing
+    const fd = new FormData();
+    fd.append("image", file);
+    const res = await fetch(`${API}/api/uploads/medicines`, { method: "POST", body: fd });
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (!res.ok) {
+      throw new Error(data?.message || "Image upload failed");
+    }
+    // server should return { filePath: "/uploads/medicines/filename.jpg" }
+    return data.filePath;
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -63,29 +122,34 @@ export default function MedicineForm({
       const method = initial ? "PUT" : "POST";
       const url = initial ? `${API}/api/medicines/${initial.id}` : `${API}/api/medicines`;
 
+      const imgPath = await uploadImageIfAny();
+
+      const payload = {
+        name: form.name.trim(),
+        category: form.category,
+        price: Number(form.price),
+        rating: Number(form.rating),
+        pack: form.pack?.trim() || null,
+        expiry_date: form.expiry_date || null,
+        status: form.status || "available",
+        desc: form.desc?.trim() || null,
+        img: imgPath || null,
+      };
+
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          category: form.category,
-          price: Number(form.price),
-          rating: Number(form.rating),
-          pack: form.pack?.trim() || null,
-          expiry_date: form.expiry_date || null,
-          status: form.status || "available",
-          desc: form.desc?.trim() || null,
-          img: form.img?.trim() || null,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.error || `Request failed: ${res.status}`);
-      }
+      let data = {};
+      try { data = await res.json(); } catch {}
+      if (!res.ok) throw new Error(data?.error || `Request failed: ${res.status}`);
 
       setMsg({ type: "success", text: `Medicine ${initial ? "updated" : "added"} successfully ✅` });
       setForm(INITIAL);
+      setFile(null);
+      setPreview("");
       onSaved?.();
     } catch (error) {
       setMsg({ type: "danger", text: error.message });
@@ -94,12 +158,22 @@ export default function MedicineForm({
     }
   }
 
+  const handleReset = () => {
+    setForm(INITIAL);
+    setFile(null);
+    setPreview("");
+    setMsg({ type: "", text: "" });
+  };
+
+  // min=”today” prevents picking past dates in most browsers
+  const todayISO = new Date().toISOString().slice(0, 10);
+
   return (
     <div className="admin-meds">
       <div className="d-flex align-items-center justify-content-between kbar mb-3">
         <h6 className="mb-0 fw-bold text-brand">{initial ? "Edit Medicine" : "Add Medicine"}</h6>
         <div className="d-flex gap-2">
-          <button className="btn btn-outline-brand btn-sm" onClick={() => setForm(INITIAL)} disabled={loading}>
+          <button className="btn btn-outline-brand btn-sm" onClick={handleReset} disabled={loading}>
             Reset
           </button>
           <button className="btn btn-secondary btn-sm" onClick={onCancel} disabled={loading}>
@@ -116,20 +190,18 @@ export default function MedicineForm({
             <div className="row g-3">
               {/* Left column */}
               <div className="col-md-6">
-                <label className="form-label">Medicine Image (path)</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="img"
-                  value={form.img}
-                  onChange={handleChange}
-                  placeholder="/images/panadol.jpg"
-                />
+                <label className="form-label">Medicine Image</label>
+                <input type="file" accept="image/*" className="form-control" onChange={handleFile} />
                 <div className="form-text">
-                  Put images in <code>/public/images</code> and refer as <code>/images/…</code>
+                  Images are uploaded to <code>/uploads/medicines</code> on the server.
                 </div>
+                {preview && (
+                  <div className="mt-2">
+                    <img src={preview} alt="preview" style={{ maxWidth: 180, borderRadius: 8 }} />
+                  </div>
+                )}
 
-                <label className="form-label mt-3">Quantity/Pack</label>
+                <label className="form-label mt-3">Quantity / Pack</label>
                 <input
                   type="text"
                   className="form-control"
@@ -139,7 +211,7 @@ export default function MedicineForm({
                   placeholder="Strip of 10 / 200 ml bottle"
                 />
 
-                <label className="form-label mt-3">MRP / Description</label>
+                <label className="form-label mt-3">Description</label>
                 <textarea
                   className="form-control"
                   rows="4"
@@ -215,6 +287,7 @@ export default function MedicineForm({
                       type="date"
                       className="form-control"
                       name="expiry_date"
+                      min={todayISO}
                       value={form.expiry_date}
                       onChange={handleChange}
                     />
@@ -240,7 +313,7 @@ export default function MedicineForm({
 
             <div className="d-flex gap-2 mt-4">
               <button className="btn btn-brand" type="submit" disabled={loading}>
-                {loading ? "Saving…" : (initial ? "Save Changes" : "Save Medicine")}
+                {loading ? "Saving…" : initial ? "Save Changes" : "Save Medicine"}
               </button>
               <button className="btn btn-outline-brand" type="button" onClick={onCancel} disabled={loading}>
                 Cancel

@@ -18,6 +18,10 @@
 
 .admin-dash h4 { color: var(--ink-800); }
 
+.admin-dash.container {
+  width: 1140px !important;
+}
+
 /* KPI card */
 .kpi-card {
   border: 1px solid var(--border);
@@ -65,3 +69,32 @@
   color: #fff; border: none;
 }
 .btn-brand:hover { background: var(--brand-700); color: #fff; }
+
+/* photo column */
+.admin-meds .table-meds th:nth-child(2),
+.admin-meds .table-meds td:nth-child(2) {
+  width: 72px;             /* reserve space for the thumb */
+}
+
+/* fixed-size thumbnail box */
+.admin-meds .table-meds .thumb {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;         /* keeps table from squishing the cell */
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f4f6f5;
+  border: 1px solid #eef3f0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* image always fills the box without stretching */
+.admin-meds .table-meds .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;          /* removes default inline gap */
+}
