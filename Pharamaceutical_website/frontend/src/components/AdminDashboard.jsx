@@ -8,11 +8,20 @@ import DoctorForm from "./DoctorForm.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 
 
+
 export default function AdminDashboard() {
   const [active, setActive] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    if (role !== "admin") {
+      navigate("/"); // kick non-admins to home
+    }
+  }, [navigate]);
 
   //for route
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const location = useLocation();
 
 
@@ -29,6 +38,8 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);     // for edit
 // 👇 ADD THIS new code right here
 const [doctorCount, setDoctorCount] = useState(0);
 const API = import.meta.env.VITE_API_BASE_URL || "";
+
+
 
 useEffect(() => {
   const loadDoctorCount = async () => {

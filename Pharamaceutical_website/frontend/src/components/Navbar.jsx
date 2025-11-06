@@ -12,11 +12,14 @@ function useCartCount() {
   return count;
 }
 
+
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cartCount = useCartCount();
   const navigate = useNavigate();
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -25,9 +28,28 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setIsLoggedIn(false);
     navigate("/"); // redirect to home
+    
   };
+
+  if (role === "admin") {
+    return (
+      <nav className="mc-navbar">
+        <div className="container d-flex align-items-center justify-content-between py-2">
+
+          <NavLink to="/" className="brand">
+            <span className="brand-text">MediCure</span>
+          </NavLink>
+
+          <button className="btn btn-brand" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </nav>
+    );
+  }
 
   const closeOnNav = () => setOpen(false);
 
