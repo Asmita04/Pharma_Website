@@ -27,7 +27,7 @@ export default function AdminDashboard() {
 
   //Medicines
   const [medsView, setMedsView] = useState("list");        // 'list' | 'form'
-  const [reloadToken, setReloadToken] = useState(0);        // force list reload
+  const [reloadTokenForMedicine, setReloadTokenForMedicine] = useState(0);        // force list reload
   const [selectedMedicine, setSelectedMedicine] = useState(null); // for edit
 
 //Doctors
@@ -35,8 +35,9 @@ const [doctorsView, setDoctorsView] = useState("list");        // 'list' | 'form
 const [reloadTokenForDoctor, setReloadTokenForDoctor] = useState(0);  // force list reload
 const [selectedDoctor, setSelectedDoctor] = useState(null);     // for edit
 
-// 👇 ADD THIS new code right here
+// ADD THIS new code right here
 const [doctorCount, setDoctorCount] = useState(0);
+const [medicineCount, setMedicineCount] = useState(0);
 const API = import.meta.env.VITE_API_BASE_URL || "";
 
 
@@ -57,13 +58,29 @@ useEffect(() => {
   loadDoctorCount();
 }, [API, reloadTokenForDoctor]);
 
+useEffect(() => {
+  const loadMedicineCount = async () => {
+    try {
+      const res = await fetch(`${API}/api/medicines`);
+      if (!res.ok) throw new Error("Failed to fetch medicines");
+      const data = await res.json();
+      const MedicinesArray = Array.isArray(data.data) ? data.data : data;
+      setMedicineCount(MedicinesArray.length || 0);
+    } catch (err) {
+      console.error("Error fetching medicine count:", err);
+    }
+  };
+
+  loadMedicineCount();
+}, [API, reloadTokenForMedicine]);
+
 
   const KPIS = [
     { key: "sales",    title: "Total Sales", suffix: "₹", value: 0, hint: "View total revenue" },
     { key: "orders",   title: "Orders",      value: 0,               hint: "View all orders" },
     { key: "doctors",  title: "Doctors",     value: doctorCount,     hint: "Manage doctors" },
     { key: "patients", title: "Patients",    value: 0,               hint: "Manage patients" },
-    { key: "meds",     title: "Medicines",   value: 1,               hint: "View/Add/Delete medicines" },
+    { key: "meds",     title: "Medicines",   value: medicineCount,   hint: "View/Add/Delete medicines" },
   ];
 
   const panelTitle = active
@@ -80,12 +97,12 @@ useEffect(() => {
         <MedicinesList
           onAdd={() => { setSelectedMedicine(null); setMedsView("form"); }}
           onEdit={(row) => { setSelectedMedicine(row); setMedsView("form"); }}
-          reloadToken={reloadToken}
+          reloadTokenForMedicine={reloadTokenForMedicine}
         />
       ) : (
         <MedicineForm
           initial={selectedMedicine}               // if present -> PUT; else -> POST
-          onSaved={() => { setMedsView("list"); setReloadToken(t => t + 1); }}
+          onSaved={() => { setMedsView("list"); setReloadTokenForMedicine(t => t + 1); }}
           onCancel={() => setMedsView("list")}
         />
       );
@@ -130,7 +147,9 @@ useEffect(() => {
 
               title={kpi.hint}
             >
-              <div className="kpi-icon" aria-hidden>★</div>
+              <div className="kpi-icon" aria-hidden>
+                {({ sales: "💰", orders: "📦", doctors: "🩺", patients: "👨‍⚕️", meds: "💊" }[kpi.key])}
+              </div>
               <div className="kpi-title">{kpi.title}</div>
               <div className="kpi-value">{kpi.suffix === "₹" ? "₹" : ""}{kpi.value}</div>
             </button>

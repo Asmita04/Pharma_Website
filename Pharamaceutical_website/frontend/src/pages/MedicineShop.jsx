@@ -61,6 +61,25 @@ function StarRating({ value }) {
   );
 }
 
+const handleBuyNow = (p) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    // user not logged in → store intent
+    localStorage.setItem("intent", "buynow");
+    localStorage.setItem("intentCartItem", JSON.stringify(p));
+    navigate("/login");
+    return;
+  }
+
+  // logged in → normal buy now logic
+  // add item to cart
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  cart.push({ ...p, quantity: 1 });
+  localStorage.setItem("cart", JSON.stringify(cart));
+  navigate("/cart");
+};
+
 export default function MedicineShop() {
   const [activeCat, setActiveCat] = useState("All");
   const [medicines, setMedicines] = useState([]);
@@ -80,6 +99,18 @@ export default function MedicineShop() {
     if (activeCat === "All") return medicines;
     return medicines.filter((p) => p.category === activeCat);
   }, [activeCat, medicines]);
+
+  const handleBuyNow = (p) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.setItem("intent", "buynow");
+      localStorage.setItem("intentCartItem", JSON.stringify(p));
+      navigate("/login");
+      return;
+    }
+    addOrIncrement(p, 1);
+    navigate("/cart");
+  };
 
   return (
   <div className="medicine-shop">
@@ -175,8 +206,7 @@ export default function MedicineShop() {
                     <button
                       className="btn btn-brand flex-fill"
                       onClick={() => {
-                        addOrIncrement(p, 1); // add (or increment) first
-                        navigate("/cart");    // then go to cart
+                        handleBuyNow(p)
                       }}
                     >
                       Buy Now

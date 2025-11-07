@@ -27,15 +27,13 @@ function Layout() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/admin/dashboard" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>}/>
+          <Route path="/admin/dashboard/*" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>}/>
           <Route path="/shop" element={<MedicineShop />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/findDoctors" element={<FindDoctors/>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
-         <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
         </Routes>
       </div>
     </>

@@ -8,20 +8,42 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Read & clear any saved login intent
+  const popIntent = () => {
+    const intent = localStorage.getItem("intent") || "";
+    const returnTo = localStorage.getItem("returnTo") || "";
+    const cartItem = localStorage.getItem("intentCartItem"); // optional: if you also save an item to add later
+    localStorage.removeItem("intent");
+    localStorage.removeItem("returnTo");
+    if (cartItem) localStorage.removeItem("intentCartItem");
+    return { intent, returnTo, cartItem: cartItem ? JSON.parse(cartItem) : null };
+  };
+
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.email || !form.password) { setError("Email and password required"); return; }
+    if (!form.email || !form.password) {
+      setError("Email and password required");
+      return;
+    }
 
     // 🔐 Admin shortcut (same login page)
     if (form.email === "admin@gmail.com" && form.password === "admin123") {
       localStorage.setItem("role", "admin");
-      localStorage.setItem("token", "admin-static-token"); // just a placeholder
-      navigate("/admin/dashboard");
+      localStorage.setItem("token", "admin-static-token"); // placeholder token
+
+      const { intent, returnTo } = popIntent();
+      if (intent === "buynow") {
+        navigate("/cart");
+      } else if (returnTo) {
+        navigate(returnTo);
+      } else {
+        navigate("/admin/dashboard");
+      }
       return;
     }
 
@@ -39,7 +61,15 @@ export default function Login() {
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", "user");
-        navigate("/");
+
+        const { intent, returnTo } = popIntent();
+        if (intent === "buynow") {
+          navigate("/cart");
+        } else if (returnTo) {
+          navigate(returnTo);
+        } else {
+          navigate("/");
+        }
       }
     } catch (err) {
       setError("Cannot reach server");
@@ -47,7 +77,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="auth-wrapper">
