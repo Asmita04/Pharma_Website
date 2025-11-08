@@ -1,6 +1,6 @@
-// src/components/Find-Doctors.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import "./Find-doctors.css";
+import BookingModal from "./BookingModal"; // ADD THIS IMPORT
 
 const SPECIALIZATIONS = [
   "All",
@@ -32,6 +32,11 @@ export default function FindDoctors() {
   });
   const [showAllLanguages, setShowAllLanguages] = useState(false);
 
+  // ADD THESE STATE VARIABLES FOR BOOKING MODAL
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [selectedConsultationType, setSelectedConsultationType] = useState("");
+
   // Fetch doctors from backend
   useEffect(() => {
     let ignore = false;
@@ -42,7 +47,6 @@ export default function FindDoctors() {
         const res = await fetch(`${API}/api/doctors`);
         if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
         const data = await res.json();
-        // Handle response format from Sequelize backend
         const doctorsList = data.data || data.doctors || (Array.isArray(data) ? data : []);
         if (!ignore) setDoctors(Array.isArray(doctorsList) ? doctorsList : []);
       } catch (e) {
@@ -52,7 +56,9 @@ export default function FindDoctors() {
       }
     };
     load();
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [API]);
 
   // Filter doctors based on selected filters
@@ -123,8 +129,22 @@ export default function FindDoctors() {
       modeOfConsult: [],
       experienceRange: [],
       feeRange: [],
-      languages: []
+      languages: [],
     });
+  };
+
+  // ADD THIS FUNCTION TO HANDLE BOOKING BUTTON CLICK
+  const handleBooking = (doctor, consultationType) => {
+    setSelectedDoctor(doctor);
+    setSelectedConsultationType(consultationType);
+    setShowBookingModal(true);
+  };
+
+  // ADD THIS FUNCTION TO CLOSE MODAL
+  const handleCloseModal = () => {
+    setShowBookingModal(false);
+    setSelectedDoctor(null);
+    setSelectedConsultationType("");
   };
 
   // Get doctor image
@@ -134,13 +154,16 @@ export default function FindDoctors() {
     }
     const nameKey = doctorName.toLowerCase().split(" ")[1];
     const imageMap = {
-      "rohan": new URL("../assets/doctors/dr-rajesh.jpeg", import.meta.url).href,
-      "priya": new URL("../assets/doctors/dr-anjali.jpeg", import.meta.url).href,
-      "amit": new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href,
-      "sneha": new URL("../assets/doctors/dr-neha.jpeg", import.meta.url).href,
-      "arjun": new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href
+      rohan: new URL("../assets/doctors/dr-rajesh.jpeg", import.meta.url).href,
+      priya: new URL("../assets/doctors/dr-anjali.jpeg", import.meta.url).href,
+      amit: new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href,
+      sneha: new URL("../assets/doctors/dr-neha.jpeg", import.meta.url).href,
+      arjun: new URL("../assets/doctors/dr-amit.jpeg", import.meta.url).href,
     };
-    return imageMap[nameKey] || new URL("../assets/doctors/default_doctor.jpeg", import.meta.url).href;
+    return (
+      imageMap[nameKey] ||
+      new URL("../assets/doctors/default_doctor.jpeg", import.meta.url).href
+    );
   };
 
   return (
@@ -149,7 +172,9 @@ export default function FindDoctors() {
       <section className="hero-section container-fluid p-0">
         <div className="hero-overlay d-flex align-items-center">
           <div className="container">
-            <h1 className="display-5 fw-bold text-white">Find & Consult Expert Doctors</h1>
+            <h1 className="display-5 fw-bold text-white">
+              Find & Consult Expert Doctors
+            </h1>
             <p className="lead text-white-50">
               Book appointments with trusted specialists - online or in-person
             </p>
@@ -161,10 +186,12 @@ export default function FindDoctors() {
         <div className="row">
           {/* Sidebar Filters */}
           <aside className="col-lg-3 d-none d-lg-block">
-            <div className="filters-sidebar sticky-top">
-              <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="filters-sidebar sticky-top"><div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Filters</h5>
-                <button className="btn btn-link btn-sm text-brand p-0" onClick={clearAllFilters}>
+                <button
+                  className="btn btn-link btn-sm text-brand p-0"
+                  onClick={clearAllFilters}
+                >
                   Clear All
                 </button>
               </div>
@@ -244,7 +271,17 @@ export default function FindDoctors() {
                   "Hindi",
                   "Telugu",
                   ...(showAllLanguages
-                    ? ["Marathi", "Tamil", "Gujarati", "Kannada", "Malayalam", "Bengali", "Punjabi", "Urdu", "Odia"]
+                    ? [
+                        "Marathi",
+                        "Tamil",
+                        "Gujarati",
+                        "Kannada",
+                        "Malayalam",
+                        "Bengali",
+                        "Punjabi",
+                        "Urdu",
+                        "Odia",
+                      ]
                     : []),
                 ].map((lang) => (
                   <div className="form-check" key={lang}>
@@ -282,7 +319,9 @@ export default function FindDoctors() {
                   ? filters.specialization + "s"
                   : "Doctors"}{" "}
                 Online
-                <span className="text-muted ms-2">({filteredDoctors.length} doctors)</span>
+                <span className="text-muted ms-2">
+                  ({filteredDoctors.length} doctors)
+                </span>
               </h4>
             </div>
 
@@ -312,7 +351,10 @@ export default function FindDoctors() {
                 </div>
               ) : filteredDoctors.length > 0 ? (
                 filteredDoctors.map((doctor) => (
-                  <article key={doctor.doctor_id} className="doctor-card card mb-3 shadow-sm border">
+                  <article
+                    key={doctor.doctor_id}
+                    className="doctor-card card mb-3 shadow-sm border"
+                  >
                     <div className="card-body p-4">
                       <div className="row">
                         <div className="col-auto">
@@ -355,22 +397,29 @@ export default function FindDoctors() {
                             </p>
                           )}
 
+                          {/* UPDATED: Action Buttons with Booking Functionality */}
                           <div className="row mt-3">
                             <div className="col-md-6 mb-2 mb-md-0">
                               {(doctor.modeOfConsult === "Online Consult" ||
                                 doctor.modeOfConsult === "Both") && (
-                                <button className="btn btn-outline-teal w-100 py-2">
+                                <button
+                                  className="btn btn-outline-teal w-100 py-2"
+                                  onClick={() => handleBooking(doctor, "Online Consult")}
+                                >
                                   <div className="fw-bold">Online Consult</div>
-                                  <small className="text-success">Available</small>
+                                  <small className="text-success">Book Now</small>
                                 </button>
                               )}
                             </div>
                             <div className="col-md-6">
                               {(doctor.modeOfConsult === "Hospital Visit" ||
                                 doctor.modeOfConsult === "Both") && (
-                                <button className="btn btn-teal w-100 py-2">
+                                <button
+                                  className="btn btn-teal w-100 py-2"
+                                  onClick={() => handleBooking(doctor, "Hospital Visit")}
+                                >
                                   <div className="fw-bold">Visit Doctor</div>
-                                  <small>Available</small>
+                                  <small>Book Now</small>
                                 </button>
                               )}
                             </div>
@@ -383,7 +432,9 @@ export default function FindDoctors() {
               ) : (
                 <div className="text-center py-5">
                   <i className="bi bi-search fs-1 text-muted"></i>
-                  <p className="text-muted mt-3">No doctors found matching your filters.</p>
+                  <p className="text-muted mt-3">
+                    No doctors found matching your filters.
+                  </p>
                   <button className="btn btn-brand" onClick={clearAllFilters}>
                     Clear All Filters
                   </button>
@@ -393,6 +444,15 @@ export default function FindDoctors() {
           </main>
         </div>
       </div>
+
+      {/* ADD BOOKING MODAL */}
+      {showBookingModal && selectedDoctor && (
+        <BookingModal
+          doctor={selectedDoctor}
+          consultationType={selectedConsultationType}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 }

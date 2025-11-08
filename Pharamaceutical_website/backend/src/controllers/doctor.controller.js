@@ -33,7 +33,7 @@ export const createDoctor = async (req, res) => {
 // List doctors with advanced filters
 export const listDoctors = async (req, res) => {
   try {
-    console.log("📋 Fetching doctors list...");
+    console.log("Fetching doctors list...");
     console.log("Query params:", req.query);
 
     const {
